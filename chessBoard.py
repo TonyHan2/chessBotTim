@@ -34,52 +34,33 @@ def printBoard(board):
             else:
                 print("\u0332".join("_|"*int(item)),end="")
         print()
-def moveChecker(move):
-    move = chess.Move.from_uci(move)
-    if move in board.legal_moves:
-        if board.is_checkmate():
-            return 2
-        if board.is_stalemate():
-            return 3
-        if board.is_insufficient_material():
-            return 4
-        else:
-            return 1
-    else:
-        return 0
 
 playerColor = False
 
-checkmate = 2
-stalemate = 3
-insufficient = 4
-normal = 1
+import randomPlayer
 
 run = True
 while run:
-    print(board)
-    print(bool(board.color_at))
+    printBoard(board)
     if board.color_at == playerColor:
         print('player')
         move = input()
     else:
-        print('bot')
-        move = input()
-        #move = botMove(board)
-        #move = str(random.choice(list(board.legal_moves)))
+        move = randomPlayer.botMove(board)
+        move = str(random.choice(list(board.legal_moves)))
 
-    result = moveChecker(move)
-    if result == normal:
-        board.push(chess.Move.from_uci(move))
-    if result == checkmate:
-        print("checkmate")
-        run = False
-    if result == stalemate:
-        print("stalemate")
-        run = False
-    if result == insufficient:
-        print("insufficient")
-        run = False
+    move = chess.Move.from_uci(move)
+    if move in board.legal_moves:
+        board.push(move)
+        if board.is_checkmate():
+            print("checkmate")
+            run = False
+        if board.is_stalemate():
+            print("stalemate")
+            run = False
+        if board.is_insufficient_material():
+            print("insufficient")
+            run = False
     else:
         print("INVALID")
         run = False
